@@ -77,8 +77,8 @@ public class PostController {
         Page<Post> pagePosts = postService.글목록(page);
 
         model.addAttribute("posts", pagePosts);
-        model.addAttribute("nextpage", page + 1);
-        model.addAttribute("prevpage", page - 1);
+        model.addAttribute("nextPage", page + 1);
+        model.addAttribute("prevPage", page - 1);
 
         return "post/list";
     }

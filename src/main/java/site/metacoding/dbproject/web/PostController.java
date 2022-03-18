@@ -94,14 +94,27 @@ public class PostController {
     @GetMapping("/post/{id}") // 인증이 필요없기 때문에 주소는 이대로 놔둬야 한다. 따라서 주소는 놔두고 Get요청시에는 필터에서 /post 거르는거를 제외를 시켜준다.
     public String detail(@PathVariable Integer id, Model model) {
 
+        User principal = (User) session.getAttribute("principal");
+
         Post postEntity = postService.글상세보기(id);
 
+        // 게시불이 없으면 error 페이지로 이동
         if (postEntity == null) {
             return "error/page1";
-        } else {
-            model.addAttribute("post", postEntity);
-            return "post/detail";
         }
+
+        if (principal != null) {
+            // 권한 확인해서 view로 값 넘김
+            if (principal.getId() == postEntity.getUser().getId()) { // 권한이 있다는 뜻
+                model.addAttribute("pageOwner", true);
+            } else {
+                model.addAttribute("pageOwner", false);
+            }
+        }
+
+        model.addAttribute("post", postEntity);
+        return "post/detail";
+
     }
 
     // GET 글 수정 페이지 /post/{id}/updateForm - 인증 O
